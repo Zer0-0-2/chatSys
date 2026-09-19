@@ -50,7 +50,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 
 func setupRoutes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Simple Server")
+		fmt.Fprintf(w, "Server")
 	})
 	http.HandleFunc("/ws", serveWs)
 }
