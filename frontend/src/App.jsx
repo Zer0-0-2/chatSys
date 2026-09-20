@@ -23,16 +23,18 @@ class App extends Component {
     });
   }
 
-  send() {
-    console.log("hello");
-    sendMsg("hello");
+  send(event) {
+    if(event.keyCode === 13) {
+      sendMsg(event.target.value);
+      event.target.value = "";
+    }
   }
   render() {
     return(
       <div className="App">
         <Header />
         <ChatHistory chatHistory={this.state.chatHistory} />
-        <button onClick={this.send}>Hit</button>
+        <ChatInput send={this.send} />
       </div>
     );
   } 

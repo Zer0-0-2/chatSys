@@ -1,29 +1,19 @@
-var socket = new WebSocket("ws://localhost:8080/ws")
+let socket = null;
 
-let connect = cb => {
-    console.log("connecting");
+export function connect(cb) {
+  const socket = new WebSocket("ws://localhost:8080/ws");
 
-    socket.onopen = () => {
-        console.log("Succesfully Connected");
-    };
+  socket.onopen = () => console.log("Connected");
+  socket.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+    cb(msg);
+  };
+  socket.onclose = () => console.log("Closed");
+  socket.onerror = (err) => console.log(err);
+}
 
-    socket.onmessage = msg => {
-        console.log(msg);
-        cb(msg);
-    };
-
-    socket.onclose = event => {
-        console.log("Socket Closed Connection: ", event);
-    };
-
-    socket.onerror = error => {
-        console.log("sending msg: ", msg);
-    };
-};
-
-let sendMsg = msg => {
-    console.log("sending msg: ", msg);
-    socket.send(msg);
-};
-
-export { connect, sendMsg };
+export function sendMsg(message) {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ type: 1, body: message }));
+  }
+}
