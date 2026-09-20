@@ -1,7 +1,7 @@
 let socket = null;
 
 export function connect(cb) {
-  const socket = new WebSocket("ws://localhost:8080/ws");
+  socket = new WebSocket("ws://localhost:8080/ws");
 
   socket.onopen = () => console.log("Connected");
   socket.onmessage = (event) => {

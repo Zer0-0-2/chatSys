@@ -4,7 +4,7 @@ import "./ChatHistory.scss";
 class ChatHistory extends Component {
     render () {
         const messages = this.props.chatHistory.map((msg, index) =>(
-            <p key={index}>{msg.data}</p>
+            <p key={index}>{msg.body}</p>
         ));
 
         return (
