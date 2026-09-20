@@ -1,0 +1,35 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #f5f7ff, #e8ecff);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-form h2 {
+  margin: 0 0 0.5rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.toggle-password {
+  align-self: flex-end;
+}
+
+.login-button {
+  margin-top: 0.5rem !important;
+}
