@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -14,8 +15,9 @@ type Client struct {
 }
 
 type Message struct {
-	Type int    `json:"type"`
-	Body string `json:"body"`
+	Type     int    `json:"type"`
+	Body     string `json:"body"`
+	Username string `json:"username"`
 }
 
 func (c *Client) Read() {
@@ -25,12 +27,19 @@ func (c *Client) Read() {
 	}()
 
 	for {
-		MessageType, p, err := c.Conn.ReadMessage()
+		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		message := Message{Type: MessageType, Body: string(p)}
+
+		var message Message
+		if err := json.Unmarshal(p, &message); err != nil {
+			log.Println("Error parsing message:", err)
+			continue
+		}
+
+		message.Username = c.ID
 		c.Pool.Broadcast <- message
 		fmt.Printf("Message Received: %+v\n", message)
 	}

@@ -14,6 +14,9 @@ export function connect(cb) {
 
 export function sendMsg(message) {
   if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({ type: 1, body: message }));
+    socket.send(JSON.stringify({ 
+        type: 1, 
+        body: message 
+    }));
   }
 }

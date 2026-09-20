@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/TutorialEdge/realtime-chat-go-react/pkg/websocket"
+
+	"github.com/google/uuid"
 )
 
 func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
@@ -15,6 +17,7 @@ func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &websocket.Client{
+		ID:   uuid.New().String(),
 		Conn: conn,
 		Pool: pool,
 	}

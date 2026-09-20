@@ -3,9 +3,11 @@ import "./ChatHistory.scss";
 
 class ChatHistory extends Component {
     render () {
-        const messages = this.props.chatHistory.map((msg, index) =>(
-            <p key={index}>{msg.body}</p>
+        console.log(this.props.chatHistory);
+        const messages = this.props.chatHistory.map((msg, index) => (
+            <p key={index}><strong>{msg.username}:</strong> {msg.body}</p>
         ));
+        
 
         return (
             <div className="ChatHistory">
@@ -13,7 +15,7 @@ class ChatHistory extends Component {
                 {messages}
             </div>
         );
-    }
+    };
 }
 
 export default ChatHistory
