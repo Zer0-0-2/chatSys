@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./Login.scss";
 
 function Login({ onLogin }) {
+  const [isRegistering, setIsRegistering] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,24 +18,38 @@ function Login({ onLogin }) {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const endpoint = isRegistering
+        ? "http://localhost:8080/register"
+        : "http://localhost:8080/login";
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error("Login failed");
+        const message = await response.text();
+        throw new Error(message || "Request failed");
       }
 
-      const userData = await response.json();
-      localStorage.setItem("token", userData.token);
-      localStorage.setItem("username", userData.username);
-      onLogin(userData);
+      const data = await response.json();
+
+      if (isRegistering) {
+        setIsRegistering(false);
+        setSuccessMessage("Account created. Please log in.");
+        setOpenSnackBar(true);
+        setFormData({ username: "", password: "" });
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.username);
+      onLogin(data);
       setSuccessMessage("Login successful");
       setOpenSnackBar(true);
     } catch (error) {
-      setSuccessMessage("Login failed");
+      setSuccessMessage(error.message || "Something went wrong");
       setOpenSnackBar(true);
     }
   }
@@ -43,7 +58,7 @@ function Login({ onLogin }) {
     <div className="login-page">
       <Box className="login-card">
         <form className="login-form" onSubmit={handleSubmit}>
-          <h2>Login</h2>
+          <h2>{isRegistering ? "Create Account" : "Login"}</h2>
 
           <TextField
             name="username"
@@ -74,7 +89,16 @@ function Login({ onLogin }) {
           </Button>
 
           <Button type="submit" variant="contained" className="login-button">
-            Login
+            {isRegistering ? "Create Account" : "Login"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="text"
+            onClick={() => setIsRegistering((prev) => !prev)}
+            className="switch-mode"
+          >
+            {isRegistering ? "Already have an account? Login" : "Need an account? Register"}
           </Button>
         </form>
       </Box>
@@ -84,7 +108,7 @@ function Login({ onLogin }) {
         autoHideDuration={6000}
         onClose={() => setOpenSnackBar(false)}
       >
-        <Alert severity={successMessage.includes("failed") ? "error" : "success"}>
+        <Alert severity={successMessage.includes("failed") || successMessage.includes("wrong") || successMessage.includes("not found") ? "error" : "success"}>
           {successMessage}
         </Alert>
       </Snackbar>
